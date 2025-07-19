@@ -11,6 +11,8 @@ import 'package:flutter_onedrive/onedrive_response.dart';
 import 'package:http/http.dart' as http;
 import 'onedrive_file.dart';
 import 'token.dart';
+import 'package:oauth2/oauth2.dart' show AuthorizationException;
+
 
 class OneDrive with ChangeNotifier {
   static const String authHost = "login.microsoftonline.com";
@@ -88,7 +90,9 @@ class OneDrive with ChangeNotifier {
       );
 
 //  read token from Response
-      if (result != null) {
+      if (result is AuthorizationException) {
+        debugPrint("# OneDrive -> connect: $result");
+      } else  if (result != null) {
         await _tokenManager.saveTokenResp(result);
         notifyListeners();
         return true;
